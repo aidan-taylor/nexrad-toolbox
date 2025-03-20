@@ -1,4 +1,4 @@
-function [resultsPy, results] = downloadAvailScans(availscansPy, location, keepFolderStructure)
+function [resultsPy, results] = downloadAvailScans(availscansPy, location, awsStructure)
 %DOWNLOADAVAILSCANS Download selected scans to local drive and report success/fail metadata.
 %
 % Downloads the given scan data from the AWS NEXRAD Archive. Returns the metadata required to read the files from the
@@ -8,7 +8,7 @@ function [resultsPy, results] = downloadAvailScans(availscansPy, location, keepF
 % availscans (py.list) - List containing the metadata for each of the scan available in the AWS NEXRAD archive. Fields
 %									are: awspath, key, scan_time, radar_id, filename, last_modified (unused).
 % location (string) - Local drive path to desired download folder.
-% keepFolderStructure (logical) - Whether or not to use the AWS folder structure inside the download location...
+% awsStructure (logical) - Whether or not to use the AWS folder structure inside the download location...
 %									(year/month/day/radar/).
 %
 % OUTPUTS
@@ -24,14 +24,14 @@ function [resultsPy, results] = downloadAvailScans(availscansPy, location, keepF
 arguments
 	availscansPy (1,:) py.list
 	location (1,1) string = pwd;
-	keepFolderStructure (1,1) logical = false;
+	awsStructure (1,1) logical = true;
 end
 
 % Initialise python AWS interface
 conn = py.nexradaws.NexradAwsInterface();
 
 % Attempt download of all available scan files
-resultsPy = conn.download(availscansPy, location, keep_aws_folders=keepFolderStructure);
+resultsPy = conn.download(availscansPy, location, keep_aws_folders=awsStructure);
 
 % Check if any failed
 if double(resultsPy.failed_count) > 0

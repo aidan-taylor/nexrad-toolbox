@@ -5,19 +5,20 @@ function filename = readCloud(varargin)
 % Initialise output
 filename = string.empty(1,0);
 
-% Parse inputs
+% Parse inputs (any additional inputs are ignored)
 p = inputParser;
+p.KeepUnmatched = true;
 p.addRequired('radarID', @(z)mustBeText(z));
 p.addRequired('startTime', @(z)isdatetime(z));
 p.addRequired('endTime', @(z)isdatetime(z));
 p.addOptional('saveLocation', string.empty(1,0), @(z)mustBeTextScalar(z));
-p.addParameter('keepAwsStructure', false, @(z)islogical(z));
+p.addParameter('awsStructure', true, @(z)islogical(z));
 p.addParameter('manual', false, @(z)islogical(z));
 p.parse(varargin{:});
 
 % Extract overwritable inputs
 saveLocation = p.Results.saveLocation;
-keepAwsStructure = p.Results.keepAwsStructure;
+awsStructure = p.Results.awsStructure;
 
 % Check if a radar station ID has been given and it is valid
 if isempty(p.Results.radarID), error('NEXRAD:IO:InvalidID', 'No radar station ID has been given'); end
@@ -35,23 +36,27 @@ end
 
 % If the save location is empty, download to temp folder in a time-stamped subfolder with AWS structure
 if isempty(saveLocation)
-	saveLocation = fullfile(tempdir, 'NEXRAD-database');
-	keepAwsStructure = true;
+	saveLocation = fullfile(tempdir, 'NEXRAD-Database');
 end
 
 % TODO -- add ui to allow user to manually choose which of the remote files to download from the list available? [20/03/2025]
 
 % Check the cloud files have not already been downloaded to path (only checks saveLocation or the corresponding aws folder in savelocation)
-[missingScansPy, ~, ~, presentScans] = nexrad.aws.checkAvailScans(availScansPy, saveLocation, keepAwsStructure);
+[missingScansPy, ~, ~, presentScans] = nexrad.aws.checkAvailScans(availScansPy, saveLocation, awsStructure);
 
 if ~isempty(presentScans)
-	% Generate filename string containing the absolute path to the local files
-	filename = [filename, fullfile(saveLocation, presentScans.filename)];
+	if awsStructure
+		% Use AWS key to get the absolute path to the local files
+		filename = [filename, fullfile(saveLocation, presentScans.key)];
+	else
+		% Generate filename string containing the absolute path to the local files
+		filename = [filename, fullfile(saveLocation, presentScans.filename)];
+	end
 end
 
 if ~isempty(missingScansPy)
 	% Download the missing scans to data folder (python format).
-	[~, results] = nexrad.aws.downloadAvailScans(missingScansPy, saveLocation, keepAwsStructure);
+	[~, results] = nexrad.aws.downloadAvailScans(missingScansPy, saveLocation, awsStructure);
 	
 	% Generate filename string containing the absolute path to the downloaded files
 	filename = [filename, results.filepath];

@@ -12,7 +12,7 @@ for iScan in range(len(availScans)): # Loop over the number of scans
     if availScans[iScan].filename.endswith("MDM"): # (short circuit)
         continue # Skip files that end in MPM as this is unreadable by the pyart module (maintenance?)
 
-    if aws: # If AWS folder structure is maintained
+    if awsStructure: # If AWS folder structure is maintained
         dataFolder = os.path.join(location, availScans[iScan].awspath, "*") # Form current loop datapath (in aws)
         downloadedFiles = glob(dataFolder) # Get list of files in folder (regenerates every loop in case the aws path changes)
 
