@@ -11,6 +11,9 @@ tmp = cell(pythonList);
 % Get object field names (assumes all entries have same object fields)
 loopFields = fieldnames(tmp{1});
 
+% Remove 'last_modified' field as it is not relevent
+loopFields(strcmp(loopFields, 'last_modified')) = [];
+
 % Initialise output struct
 matlabStruct = cell2struct(cell(length(loopFields),1), loopFields);
 
@@ -27,17 +30,16 @@ for iEntry = 1:length(tmp)
 		% If querying datetime info
 		if strcmp(currentField, 'scan_time')
 			% Need to convert within python to a str so can be read by matlab as a datetime
-			[value, zone] = pyrun({'from datetime import datetime', 'import pytz', 'import nexradaws', 'time = input.scan_time', ...
-				'output = f"{time:%d-%m-%Y %H:%M:%S}.{time.microsecond // 1000:03d}"', 'zone = time.tzinfo.zone'}, ["output", "zone"], input=currentEntry);
-			% Convert to datetime
-			value = datetime(string(value), 'InputFormat', 'dd-MM-yyyy HH:mm:ss.SSS', 'TimeZone', string(zone));
-			value.Format = 'dd-MM-yyyy HH:mm:ssZ';
+			[timeStr, zoneStr] = pyrun({'time = input.scan_time', ...
+				'timeStr = f"{time:%d-%m-%Y %H:%M:%S}.{time.microsecond // 1000:03d}"', ...
+				'zoneStr = time.tzinfo.zone'}, ["timeStr", "zoneStr"], input=currentEntry);
 			
-		elseif strcmp(currentField, 'last_modified')
-			% This isn't really relevent, so skip
-			continue
+			% Convert to datetime
+			value = datetime(string(timeStr), 'InputFormat', 'dd-MM-yyyy HH:mm:ss.SSS', 'TimeZone', string(zoneStr));
+			value.Format = 'dd-MM-yyyy HH:mm:ssZ';
+
 		else
-			% Otherwise can just convert python str dirently to matlab string
+			% Otherwise can just convert python str directly to matlab string
 			value = string(currentEntry.(currentField));
 		end
 		
@@ -45,6 +47,3 @@ for iEntry = 1:length(tmp)
 		matlabStruct.(currentField)(1, iEntry) = value;
 	end
 end
-
-% Remove last_modified field as it is not used
-matlabStruct = rmfield(matlabStruct, 'last_modified');
