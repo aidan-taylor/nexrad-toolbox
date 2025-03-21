@@ -1,6 +1,6 @@
 function filename = prepareForRead(filename, varargin)
-% PREPAREFORREAD
-%
+% PREPAREFORREAD Performs input checks for nexrad.io functions.
+% This is an internal validation function.
 
 arguments (Input)
 	filename (1,:) string = [];

@@ -1,13 +1,8 @@
-function fcnHandle = extractArchive(fieldName, sweep)
-%EXTRACTARCHIVE
-%
+function fcnHandle = extractArchive
+%EXTRACTARCHIVE Extract radar data from datastore entry
+% Returns nexrad.core.Radar object
 
-arguments
-	fieldName (1,1) string = "reflectivity";
-	sweep (1,:) double = 1;
-end
-
-% Output function handle (nested function handle will pass the values of fieldName and sweep)
+% Output function handle
 fcnHandle = @extractData;
 
 % Custom fileDatastore read function
@@ -16,13 +11,7 @@ fcnHandle = @extractData;
 	% Read the given file and return radar object
 	radar = nexrad.io.readArchive(filename);
 	
-	% Extract point cloud data
-	ptCloud = radar.pointCloud(fieldName, sweep);
-	
-	% TODO -- make categories for neural network properly?
-	label = categorical("Hurricane");
-	
 	% Assign output
-	dataOut = {ptCloud, label};
+	dataOut = radar;
 	end
 end
