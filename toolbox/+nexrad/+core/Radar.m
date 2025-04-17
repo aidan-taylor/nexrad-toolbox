@@ -638,7 +638,7 @@ classdef Radar
 		% Wrapper for external function which converts the sweep data
 		% into a matlab pointCloud class.
 		if nargin < 2, fieldName = 'reflectivity'; end
-		if nargin < 3, sweep = 1:self.nsweeps; end
+		if nargin < 3, sweep = 1; end
 		
 		% Initialise x, y, z, and data tmp variables
 		x = [];
