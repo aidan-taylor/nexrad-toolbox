@@ -28,7 +28,7 @@ function filename = prepareForRead(filename, varargin)
 			[file, location] = nexrad.utility.uiget(pwd, 'Title', 'Choose a NEXRAD Level II Data Archive', 'MultiSelect', true);
 			
 			% If location returns an "empty" string array ("" shows as 1x1 array) assume ui was cancelled and error
-			if isempty(location{:}), error('NEXRAD:IO:InvalidID', 'No local folder or file selected'); end
+			if any(cellfun(@isempty, location)), error('NEXRAD:IO:InvalidID', 'No local folder or file selected'); end
 			
 			% Form full path to chosen files
 			filename = string(fullfile(location, file));
