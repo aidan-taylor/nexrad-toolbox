@@ -4,9 +4,13 @@ from datetime import datetime # Needed as MATLAB natively converts datetime to n
 # Initialise outputs
 availScans = [] 
 
-# Extract datetime array from MATLAB converted list
-startTime = startTime[0].astype(datetime)
-endTime = endTime[0].astype(datetime)
+# If multiple datetimes are given, MATLAB converts to a numpy.ndarray of numpy.datetime64 array
+# so need to extract from numpy.ndarray and convert to list of datetime.datetime
+if type(startTime) is not datetime:
+    startTime = startTime[0].astype(datetime)
+    
+if type(endTime) is not datetime:
+    endTime = endTime[0].astype(datetime)
 
 # Initialise NEXRAD AWS interface
 conn = nexradaws.NexradAwsInterface(); 
@@ -14,10 +18,18 @@ conn = nexradaws.NexradAwsInterface();
 # Loop over the number of radarIDs
 for iRadar in range(len(radarID)): 
 
-    # Extract the current loop variables
+    # Extract the current loop variables (if times have multiple entries need to extract)
     tmpRadarID = radarID[iRadar] 
-    tmpStartTime = startTime[iRadar]
-    tmpEndTime = endTime[iRadar]
+    
+    if type(startTime) is not datetime:
+        tmpStartTime = startTime[iRadar]
+    else:
+        tmpStartTime = startTime
+        
+    if type(endTime) is not datetime:
+        tmpEndTime = endTime[iRadar]
+    else:
+        tmpEndTime = endTime
    
     try:
        # Check if given parameters match valid AWS entries for the nexrad archive
