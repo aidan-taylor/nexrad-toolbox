@@ -190,6 +190,9 @@ classdef Radar
 		function self = Radar(varargin)
 		%RADAR Construct an instance of this class
 		%   Detailed explanation goes here
+		% if isempty(varargin), return, end
+		if isempty(varargin), return, end 
+		
 		inputs = self.parseInputs(varargin{:});
 		
 		self.time = inputs.time;
