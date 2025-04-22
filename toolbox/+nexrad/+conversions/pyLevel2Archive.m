@@ -13,8 +13,8 @@ end
 % Validate inputs
 filename = nexrad.io.prepareForRead(filename, varargin{:});
 
-% Get tmp local path
-tempFolder = fullfile(tempdir, 'tmp_convert_nexrad');
+% Make tmp folder for storing variables
+tempFolder = tempname;
 if ~isfolder(tempFolder), mkdir(tempFolder); end
 
 % Intialise output
