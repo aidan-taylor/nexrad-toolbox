@@ -2,7 +2,7 @@ function ds = loadArchive(filename, varargin)
 	%LOADARCHIVE Load NEXRAD Level 2 Archive file(s) and return datastore object.
 	% Takes either binary file (internal conversion) or matfile with each field
 	% representing the radar data. Returns datastore of each file with
-	% nexrad.io.extractArchive as the custom read function. The output of the
+	% nexrad.io.readArchive as the custom read function. The output of the
 	% datastore is the nexrad.core.Radar object(s) with radar data as fields.
 	%
 	% ==============================================
@@ -87,25 +87,5 @@ function ds = loadArchive(filename, varargin)
 	filename = nexrad.io.prepareForRead(filename, varargin{:});
 	
 	% Initialise file data storage object with custom read function
-	ds = fileDatastore(filename, 'ReadFcn', extractArchive);
-end
-
-
-%%
-function fcnHandle = extractArchive
-	%EXTRACTARCHIVE Extract radar data from datastore entry
-	% Returns nexrad.core.Radar object
-	
-	% Output function handle
-	fcnHandle = @extractData;
-	
-	% Custom fileDatastore read function
-	function dataOut = extractData(filename)
-		
-		% Read the given file and return radar object
-		radar = nexrad.io.readArchive(filename);
-		
-		% Assign output
-		dataOut = radar;
-	end
+	ds = fileDatastore(filename, 'ReadFcn', @nexrad.io.readArchive);
 end
