@@ -46,6 +46,11 @@ function filename = prepareForRead(filename, varargin)
 	% Make compulsory final check to ensure there are no duplicates
 	filename = checkDuplicate(filename);
 	
+	% If no valid files are left then give error
+	if isempty(filename)
+		error('NEXRAD:IO:InvalidFileID', 'None of the original chosen files are valid');
+	end
+	
 	
 	%%
 function filename = checkFolder(filename)
@@ -103,7 +108,7 @@ function filename = checkFile(filename)
 	% Perform check that the file is probably a correct level 2 file (files with no
 	% extension may be valid along with .gz compression and matfiles)
 	[~, ~, extension] = fileparts(filename);
-	validArchive = any([cellfun(@isempty, extension); endsWith(extension, [".gz", ".mat"])], 1);
+	validArchive = any([cellfun(@isempty, extension), endsWith(extension, [".gz", ".mat"])], 2);
 	
 	if any(~validArchive)
 		warning('NEXRAD:IO:InvalidID', '"%s" is not a valid archive, so skipping...\n\t', filename{~validArchive});
