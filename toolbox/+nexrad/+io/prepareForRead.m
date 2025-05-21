@@ -25,13 +25,10 @@ function filename = prepareForRead(filename, varargin)
 			
 		else
 			% Promp user to choose a folder(s) and/or file(s) (must be in same folder)
-			[file, location] = nexrad.utility.uiget(pwd, 'Title', 'Choose a NEXRAD Level II Data Archive', 'MultiSelect', true);
+			[filename] = nexrad.utility.uiget('Title', 'Choose NEXRAD Level II Data Archive(s)', 'MultiSelect', true);
 			
 			% If location returns an "empty" string array ("" shows as 1x1 array) assume ui was cancelled and error
-			if any(cellfun(@isempty, location)), error('NEXRAD:IO:InvalidID', 'No local folder or file selected'); end
-			
-			% Form full path to chosen files
-			filename = string(fullfile(location, file));
+			if isnumeric(filename), error('NEXRAD:IO:InvalidID', 'No local folder or file selected'); end
 		end
 	end
 	
@@ -108,7 +105,7 @@ function filename = checkFile(filename)
 	% Perform check that the file is probably a correct level 2 file (files with no
 	% extension may be valid along with .gz compression and matfiles)
 	[~, ~, extension] = fileparts(filename);
-	validArchive = any([cellfun(@isempty, extension), endsWith(extension, [".gz", ".mat"])], 2);
+	validArchive = any([cellfun(@isempty, extension), endsWith(extension, [".gz", ".mat"])], 2); % TODO -- Fix
 	
 	if any(~validArchive)
 		warning('NEXRAD:IO:InvalidID', '"%s" is not a valid archive, so skipping...\n\t', filename{~validArchive});
