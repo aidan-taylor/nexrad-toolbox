@@ -2,17 +2,13 @@ function pathname = uiget(varargin)
 	% UIGET Generic folder and/or file selection dialog box
 	% Uses Java Swing package (built-in)
 	%
-	% ================================
-	% INPUTS (Optional)
-	% ================================
-	%
-	% extFilter  (:,2) cell 
-	%		Specify a custom file extension filter where each
-	%		row is {extension(s), description} as follows uigetfile syntax.
-	%
 	% ==================================
 	% INPUTS (Name-Value)
 	% ==================================
+	%
+	% ExtensionFilter  (:,2) cell 
+	%		Specify a custom file extension filter where each
+	%		row is {extension(s), description} as follows uigetfile syntax.
 	%
 	% MultiSelect (1,1) logical 
 	%		Specify whether a user can select multiple files and/or folders
