@@ -41,7 +41,7 @@ function pathname = uiget(varargin)
 	
 	% Parse inputs
 	p = inputParser;
-	p.addParameter('ExtensionFilter', [], @(x)mustBeTextScalar(x));
+	p.addParameter('ExtensionFilter', [], @(x)iscell(x));
 	p.addParameter('MultiSelect', false, @(x)islogical(x))
 	p.addParameter('Title', 'Select File or Folder', @(x)mustBeTextScalar(x))
 	p.parse(varargin{:});
