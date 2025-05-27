@@ -1,4 +1,4 @@
-function radarObject = readArchive(filename, varargin)
+ function radarObject = readArchive(filename, varargin)
 	%READARCHIVE Read NEXRAD Level 2 Archive file(s) and return radar object(s).
 	% Takes either binary file (internal conversion) or matfile with the object.
 	% Returns nexrad.core.Radar object(s) with radar data as fields.
@@ -32,29 +32,27 @@ function radarObject = readArchive(filename, varargin)
 	% INPUTS  (Cloud Search) (Required)
 	% =================================
 	%
-	% radarID (1,1) string
+	% radarID (1,N) string
 	%		Four letter ICAO name of the NEXRAD station from which the scans are
 	%		desired. For a mapping of ICAO to station name, see
 	%		https://www.roc.noaa.gov/branches/program-branch/site-id-database/site-id-network-sites.php.
 	%
-	% startTime (1,1) datetime
-	%		Start of the time range between which scans are desired.
+	% startTime (1,N) datetime
+	%		Start of the time range between which scans are desired. If not
+	%		specified, timezone is assumed UTC.
 	%
-	% endTime (1,1) datetime
-	%		End of the time range between which scans are desired.
-	%
-	% ================================
-	% INPUTS (Cloud Search) (Optional)
-	% ================================
-	%
-	% saveLocation (1,1) string
-	%		Local folder to save downloaded scans to. Also provides the location to
-	%		check whether any scans are already downloaded.
-	%		(tempdir/NEXRAD-Database, default).
+	% endTime (1,N) datetime
+	%		End of the time range between which scans are desired. If not
+	%		specified, timezone is assumed UTC.
 	%
 	% ==================================
 	% INPUTS (Cloud Search) (Name-Value)
 	% ==================================
+	%
+	% saveLocation (1,1) string
+	%		Local folder to save downloaded scans to. Also provides the location
+	%		to check whether any scans are already downloaded.
+	%		(tempdir/NEXRAD-Database, default).
 	%
 	% awsStructure (1,1) logical
 	%		Maintain AWS bucket folder structure (true, default). Download all
@@ -64,8 +62,31 @@ function radarObject = readArchive(filename, varargin)
 	% OUTPUTS
 	% =======
 	%
-	% radarObject (1,N) nexrad.core.Radar
+	% radarObject (1,M) nexrad.core.Radar
 	%		Radar object containing all moments and sweeps/cuts in the volume.
+	%
+	% ========
+	% Examples
+	% ========
+	%
+	% radarObject = nexrad.io.readArchive("KABR20250207_093329_V06");
+	%		Returns an object corresponding to the radar moments observed by
+	%		KABR on 2nd July 2025. The archive file is found on the current
+	%		MATLAB path.  
+	%
+	% radarObject = nexrad.io.readArchive("C:/Data");
+	%		Returns a list of objects corresponding to the radar moments
+	%		observed within each Level 2 archive file in the folder. 
+	%
+	% radarObject = nexrad.io.readArchive(["C:/Data", "C:/Data_2/KABR20250207_093329_V06"]); 
+	%		Returns a list of objects corresponding to the radar moments
+	%		observed within each Level 2 archive file in the Data folder and the
+	%		specified archive folder within the Data_2 folder.
+	%
+	% radarObject = nexrad.io.readArchive([], "KABR", datetime([2025 01 01 00 00 00]), datetime([2025 01 01 01 00 00]));
+	%		Downloads the available Level 2 archive files from AWS for KABR on
+	%		1st January 2025 between 00:00 and 01:00 and returns a list of radar
+	%		moment objects.
 	%
 	% ==========
 	% References
