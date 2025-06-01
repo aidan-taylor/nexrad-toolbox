@@ -58,6 +58,11 @@
 	%		Maintain AWS bucket folder structure (true, default). Download all
 	%		files into same folder (false).
 	%
+	% nThreads (1,1) double
+	%		The number of processor threads used to concurrently download
+	%		files. This is the number of physical cores of a system rather than
+	%		virtual threads.
+	%
 	% =======
 	% OUTPUTS
 	% =======

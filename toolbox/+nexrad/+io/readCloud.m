@@ -34,6 +34,11 @@ function filename = readCloud(varargin)
 	%		Maintain AWS bucket folder structure (true, default). Download all
 	%		files into same folder (false).
 	%
+	% nThreads (1,1) double
+	%		The number of processor threads used to concurrently download
+	%		files. This is the number of physical cores of a system rather than
+	%		virtual threads.
+	%
 	% =======
 	% OUTPUTS
 	% =======
@@ -60,6 +65,7 @@ function filename = readCloud(varargin)
 	p.addRequired('endTime', @(z)isdatetime(z));
 	p.addParameter('saveLocation', fullfile(tempdir, "NEXRAD-Database"), @(z)mustBeTextScalar(z));
 	p.addParameter('awsStructure', true, @(z)islogical(z));
+	p.addParameter('nThreads', 6, @(z)isnumerical(z));
 	% p.addParameter('manual', false, @(z)islogical(z)); % TODO [20/03/25]
 	p.parse(varargin{:});
 	
@@ -77,7 +83,8 @@ function filename = readCloud(varargin)
 	
 	% Check the cloud files have not already been downloaded to path (only checks
 	% saveLocation or the corresponding aws folder in savelocation)
-	[missingScansPy, ~, ~, presentScans] = nexrad.aws.checkAvailScans(availScansPy, p.Results.saveLocation, p.Results.awsStructure);
+	[missingScansPy, ~, ~, presentScans] = nexrad.aws.checkAvailScans(availScansPy, ...
+		p.Results.saveLocation, p.Results.awsStructure);
 	
 	if ~isempty(presentScans)
 		if p.Results.awsStructure
@@ -92,7 +99,8 @@ function filename = readCloud(varargin)
 	
 	if ~isempty(missingScansPy)
 		% Download the missing scans to data folder (python format).
-		[~, results] = nexrad.aws.downloadAvailScans(missingScansPy, p.Results.saveLocation, p.Results.awsStructure);
+		[~, results] = nexrad.aws.downloadAvailScans(missingScansPy, p.Results.saveLocation, ...
+			p.Results.awsStructure, p.Results.nThreads);
 		
 		% Generate filename string containing the absolute path to the downloaded
 		% files
