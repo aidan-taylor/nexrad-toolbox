@@ -100,7 +100,7 @@ function ds = loadArchive(filename, varargin)
 	end
 	
 	% Validate inputs (assume any varargin inputs relate to cloud settings)
-	filename = nexrad.io.prepareForRead(filename, varargin{:});
+	filename = nexrad.core.prepareForRead(filename, varargin{:});
 	
 	% Initialise file data storage object with custom read function
 	ds = fileDatastore(filename, 'ReadFcn', @nexrad.io.readArchive);

@@ -112,7 +112,7 @@
 	end
 	
 	% Validate inputs
-	filename = nexrad.io.prepareForRead(filename, varargin{:});
+	filename = nexrad.core.prepareForRead(filename, varargin{:});
 	
 	count = 1;
 	for sFile = filename
