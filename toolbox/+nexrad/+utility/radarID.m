@@ -1,6 +1,7 @@
 classdef radarID < int16
-	%RADARID Summary of this class goes here
-	%   Detailed explanation goes here
+	% RADARID Enumeration class containing the icao ID of each radar in the
+	% NEXRAD network. Also contains a mapping of each radar to their real-world
+	% location (lat, lon, elv).
 	
 	enumeration
 		KABR (1)
