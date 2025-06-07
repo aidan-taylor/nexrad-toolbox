@@ -108,7 +108,7 @@ function [availScansPy, availScans] = queryAvailScans(radarID, startTime, endTim
 	radarID = cellstr(radarID);
 	
 	% Run python code and return the missing scans [1]
-	availScansPy = pyrunfile("+nexrad/+aws/queryAvailScans.py", "availScans", ...
+	availScansPy = pyrunfile("+nexrad/+aws/+resources/queryAvailScans.py", "availScans", ...
 		radarID=radarID, startTime=startTime, endTime=endTime);
 	
 	% Convert information to matlab friendly format if desired (usually called with

@@ -53,8 +53,8 @@ function [missingScansPy, presentScansPy, missingScans, presentScans] = checkAva
 	location = strrep(location, '\', '/');
 	
 	% Run python code and return the missing scans
-	[missingScansPy, presentScansPy] = pyrunfile("+nexrad/+aws/checkAvailScans.py", ["missingScans", "presentScans"], ...
-		availScans=availScansPy, location=location, awsStructure=awsStructure);
+	[missingScansPy, presentScansPy] = pyrunfile("+nexrad/+aws/+resources/checkAvailScans.py", ...
+		["missingScans", "presentScans"], availScans=availScansPy, location=location, awsStructure=awsStructure);
 	
 	% Convert information to matlab friendly format if desired (usually called with [~, ~, missingScans])
 	if nargout > 2, missingScans = nexrad.conversions.pyAwsNexradFile(missingScansPy); end
