@@ -1,4 +1,4 @@
-function filename = readCloud(varargin)
+function filename = readCloud(radarID, startTime, endTime, nameValueArgs)
 	%READCLOUD Read NEXRAD Level 2 Archive AWS Bucket
 	% Query AWS for archive files belonging to radarID between startTime and
 	% endTime. Checks saveLocation for previously downloaded files then downloads
@@ -50,20 +50,20 @@ function filename = readCloud(varargin)
 	%		Downloads the available Level 2 archive files from AWS for KABR on
 	%		1st January 2025 between 00:00 and 01:00 and returns the filenames.
 	
+	arguments
+		radarID (1,:) string
+		startTime (1,:) datetime
+		endTime (1,:) datetime
+	end
+	
+	arguments
+		nameValueArgs.saveLocation (1,1) string = fullfile(tempdir, "NEXRAD-Database");
+		nameValueArgs.awsStructure (1,1) logical = true;
+		nameValueArgs.nThreads (1,1) double = 6;
+	end
+	
 	% Initialise output
 	filename = string.empty(1,0);
-	
-	% Parse inputs (any additional inputs are ignored)
-	p = inputParser;
-	p.KeepUnmatched = true;
-	p.addRequired('radarID', @(z)mustBeText(z));
-	p.addRequired('startTime', @(z)isdatetime(z));
-	p.addRequired('endTime', @(z)isdatetime(z));
-	p.addParameter('saveLocation', fullfile(tempdir, "NEXRAD-Database"), @(z)mustBeTextScalar(z));
-	p.addParameter('awsStructure', true, @(z)islogical(z));
-	p.addParameter('nThreads', 6, @(z)isnumerical(z));
-	% p.addParameter('manual', false, @(z)islogical(z)); % TODO [20/03/25]
-	p.parse(varargin{:});
 	
 	% Check if a radar station ID has been given and it is valid
 	% if isempty(p.Results.radarID), error('NEXRAD:IO:InvalidID', 'No radar station ID has been given'); end
@@ -72,7 +72,7 @@ function filename = readCloud(varargin)
 	
 	% Check if given parameters match valid AWS entries for the nexrad archive
 	% and return filepaths to cloud depository
-	availScans = nexrad.aws.queryAvailScans(p.Results.radarID, p.Results.startTime, p.Results.endTime);
+	availScans = nexrad.aws.queryAvailScans(radarID, startTime, endTime);
 	
 	% TODO -- add ui to allow user to manually choose which of the remote files to
 	% download from the list available? [20/03/2025]
@@ -80,7 +80,7 @@ function filename = readCloud(varargin)
 	% Check the cloud files have not already been downloaded to path (only checks
 	% saveLocation or the corresponding aws folder in savelocation)
 	[missingScans, presentScans] = nexrad.aws.checkAvailScans(availScans, ...
-		p.Results.saveLocation, p.Results.awsStructure);
+		nameValueArgs.saveLocation, nameValueArgs.awsStructure);
 	
 	if ~isempty(presentScans)
 		% Append filename containing the absolute path to the local files
@@ -88,9 +88,9 @@ function filename = readCloud(varargin)
 	end
 	
 	if ~isempty(missingScans)
-		% Download the missing scans to data folder (python format).
-		downloadResults = nexrad.aws.downloadAvailScans(missingScans, p.Results.saveLocation, ...
-			p.Results.awsStructure, p.Results.nThreads);
+		% Download the missing scans to data folder
+		downloadResults = nexrad.aws.downloadAvailScans(missingScans, ...
+			nameValueArgs.saveLocation, nameValueArgs.awsStructure, nameValueArgs.nThreads);
 		
 		% Append filename containing the absolute path to the local files
 		filename = [filename, downloadResults.success.filepath];
