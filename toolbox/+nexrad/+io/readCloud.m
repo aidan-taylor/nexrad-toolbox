@@ -1,13 +1,12 @@
 function filename = readCloud(varargin)
 	%READCLOUD Read NEXRAD Level 2 Archive AWS Bucket
-	% Query bucket for archive files belonging to radarID between startTime and
+	% Query AWS for archive files belonging to radarID between startTime and
 	% endTime. Checks saveLocation for previously downloaded files then downloads
 	% those missing. Returns string of the absolute paths to the files.
 	%
 	% =================================
 	% INPUTS (Required)
 	% =================================
-	%
 	% radarID (1,N) string
 	%		Four letter ICAO name of the NEXRAD station from which the scans are
 	%		desired. For a mapping of ICAO to station name, see
@@ -24,7 +23,6 @@ function filename = readCloud(varargin)
 	% ==================================
 	% INPUTS (Name-Value)
 	% ==================================
-	%
 	% saveLocation (1,1) string
 	%		Local folder to save downloaded scans to. Also provides the location
 	%		to check whether any scans are already downloaded.
@@ -42,14 +40,12 @@ function filename = readCloud(varargin)
 	% =======
 	% OUTPUTS
 	% =======
-	%
 	% filename (1,M) string
 	%		String containing the absolute paths to the downloaded files.
 	%
 	% ========
 	% Examples
 	% ========
-	%
 	% filename = nexrad.io.readCloud([], "KABR", datetime([2025 01 01 00 00 00]), datetime([2025 01 01 01 00 00]));
 	%		Downloads the available Level 2 archive files from AWS for KABR on
 	%		1st January 2025 between 00:00 and 01:00 and returns the filenames.
@@ -75,34 +71,27 @@ function filename = readCloud(varargin)
 	% 		'ID: "%s" is not a valid NEXRAD or TDWR radar ID', p.Results.radarID); end
 	
 	% Check if given parameters match valid AWS entries for the nexrad archive
-	% and return filepaths to cloud depository 
-	availScansPy = nexrad.aws.queryAvailScans(p.Results.radarID, p.Results.startTime, p.Results.endTime);
+	% and return filepaths to cloud depository
+	availScans = nexrad.aws.queryAvailScans(p.Results.radarID, p.Results.startTime, p.Results.endTime);
 	
 	% TODO -- add ui to allow user to manually choose which of the remote files to
 	% download from the list available? [20/03/2025]
 	
 	% Check the cloud files have not already been downloaded to path (only checks
 	% saveLocation or the corresponding aws folder in savelocation)
-	[missingScansPy, ~, ~, presentScans] = nexrad.aws.checkAvailScans(availScansPy, ...
+	[missingScans, presentScans] = nexrad.aws.checkAvailScans(availScans, ...
 		p.Results.saveLocation, p.Results.awsStructure);
 	
 	if ~isempty(presentScans)
-		if p.Results.awsStructure
-			% Use AWS key to get the absolute path to the local files
-			filename = [filename, fullfile(p.Results.saveLocation, presentScans.key)];
-		else
-			% Generate filename string containing the absolute path to the local
-			% files
-			filename = [filename, fullfile(p.Results.saveLocation, presentScans.filename)];
-		end
+		% Append filename containing the absolute path to the local files
+		filename = [filename, presentScans.filepath];
 	end
 	
-	if ~isempty(missingScansPy)
+	if ~isempty(missingScans)
 		% Download the missing scans to data folder (python format).
-		[~, results] = nexrad.aws.downloadAvailScans(missingScansPy, p.Results.saveLocation, ...
+		downloadResults = nexrad.aws.downloadAvailScans(missingScans, p.Results.saveLocation, ...
 			p.Results.awsStructure, p.Results.nThreads);
 		
-		% Generate filename string containing the absolute path to the downloaded
-		% files
-		filename = [filename, results.filepath];
+		% Append filename containing the absolute path to the local files
+		filename = [filename, downloadResults.success.filepath];
 	end

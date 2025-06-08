@@ -1,26 +1,21 @@
-function [resultsPy, results] = downloadAvailScans(missingScansPy, location, awsStructure, nThreads)
-	% DOWNLOADAVAILSCANS Download selected scans to local drive and report
+function results = downloadAvailScans(missingScans, location, awsStructure, nThreads)
+	%DOWNLOADAVAILSCANS Download selected scans to a local drive and report
 	% success/fail metadata. 
 	%
-	% Downloads the given scan data from the AWS NEXRAD Archive. Returns the
-	% metadata required to read the files from the local system.
-	%
-	% Currently download errors are not handled.
+	% This is a wrapper for py.nexradaws.NexradAwsInterface().download()
+	% function [1]. Currently download errors are not handled.
 	%
 	% =================
 	% INPUTS (Required)
 	% =================
-	%
-	% missingScans (1,N) py.list
-	%		List containing the metadata for each of the scan available in the AWS
-	%		NEXRAD archive. Fields are: awspath, key, scan_time, radar_id, filename,
-	%		last_modified (unused). This is output directly by
+	% missingScans (1,N) nexrad.aws.resources.AwsNexradFile
+	%		Object array containing the metadata for each of the scan available
+	%		in the AWS bucket. This is typically output directly by
 	%		nexrad.aws.checkAvailScans or by nexrad.aws.queryAvailScans. 
 	%
 	% =================
 	% INPUTS (Optional)
 	% =================
-	%
 	% location (1,1) string
 	%		Local drive path to desired download folder.
 	%
@@ -36,26 +31,19 @@ function [resultsPy, results] = downloadAvailScans(missingScansPy, location, aws
 	% =======
 	% OUTPUTS
 	% =======
-	%
-	% results (1,1) struct
-	%		Structure containing the metadata for each of the scans downloaded
-	%		from the AWS NEXRAD archive. Fields are: awspath, key, scan_time,
-	%		radar_id, filename, failed (if download(s) unsuccessful).
-	%
-	% resultsPy (1,N) py.list
-	%		Python list containing the raw metadata for downloaded scans to
-	%		enable direct compatibility further in work flow.
+	% results (1,1) nexrad.aws.resources.AwsNexradFile
+	%		Object containing the metadata for successful and failed downloads.
 	%
 	% ==========
 	% References
 	% ==========
-	%
-	% ..[1] We will access data from the **noaa-nexrad-level2** bucket, with the data organized as:
+	% ..[1] https://github.com/aarande/nexradaws/blob/master/nexradaws/nexradawsinterface.py
+	% ..[2] We will access data from the **noaa-nexrad-level2** bucket, with the data organized as:
 	% "s3://noaa-nexrad-level2/year/month/date/radarsite/{radarsite}{year}{month}{date}_{hour}{minute}{second}_V06"
 	
 	arguments
-		missingScansPy (1,:) py.list
-		location (1,1) string = pwd;
+		missingScans (1,:) nexrad.aws.resources.AwsNexradFile
+		location (1,1) string = fullfile(tempdir, "NEXRAD-Database");
 		awsStructure (1,1) logical = true;
 		nThreads (1,1) double = 6;
 	end
@@ -63,15 +51,12 @@ function [resultsPy, results] = downloadAvailScans(missingScansPy, location, aws
 	% Initialise python AWS interface
 	conn = py.nexradaws.NexradAwsInterface();
 	
-	% Attempt download of all missing scan files
-	resultsPy = conn.download(missingScansPy, location, keep_aws_folders=awsStructure, threads=nThreads);
+	% Attempt download of all missing scan files [2]
+	resultsPy = conn.download(missingScans.aslist, location, keep_aws_folders=awsStructure, threads=nThreads);
+	
+	% Convert to matlab friendly format
+	results = nexrad.aws.resources.DownloadResults(resultsPy);
 	
 	% TODO Handle download failures?
-	% if double(resultsPy.failed_count) > 0
+	% if results.failed_count > 0
 	% end
-	
-	% Convert information to matlab friendly format if desired (usually called with [~, results])
-	if nargout > 1
-		% Convert success and output so can be further used
-		results = nexrad.conversions.pyAwsNexradFile(resultsPy.success);
-	end
