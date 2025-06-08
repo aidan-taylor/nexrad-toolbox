@@ -105,7 +105,7 @@ function filename = checkFile(filename)
 	% Perform check that the file is probably a correct level 2 file (files with no
 	% extension may be valid along with .gz compression and matfiles)
 	[~, ~, extension] = fileparts(filename);
-	validArchive = any([cellfun(@isempty, extension), endsWith(extension, [".gz", ".mat"])], 2); % TODO -- Fix
+	validArchive = any([cellfun(@isempty, extension); endsWith(extension, [".gz", ".mat"])], 1);
 	
 	if any(~validArchive)
 		warning('NEXRAD:IO:InvalidID', '"%s" is not a valid archive, so skipping...\n\t', filename{~validArchive});
