@@ -112,7 +112,7 @@
 	end
 	
 	% Validate inputs
-	filename = nexrad.core.prepareForRead(filename, varargin{:});
+	filename = nexrad.io.resources.prepareForRead(filename, varargin{:});
 	
 	% Generate radar objects
 	radarObject = nexrad.core.Radar(filename);
