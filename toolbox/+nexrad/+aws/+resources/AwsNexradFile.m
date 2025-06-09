@@ -1,4 +1,4 @@
-classdef AwsNexradFile
+classdef AwsNexradFile < nexrad.core.resources.UnderlyingPythonFramework
 	% AWSNEXRADFILE Metadata for remote NEXRAD files on AWS
 	% This is a wrapper for py.nexradaws.resources.awsnexradfile.AwsNexradFile
 	% objects [1].
@@ -17,13 +17,11 @@ classdef AwsNexradFile
 		scan_time (1,1) datetime
 	end
 	
-	% Store original python object
-	properties (Hidden, SetAccess=immutable, GetAccess=private)
-		underlyingDatastore (1,1)
-	end
-	
 	methods % Constructor
 		function obj = AwsNexradFile(AwsNexradFilePy)
+			%AWSNEXRADFILE
+			%
+			
 			% For array pre-allocation
 			if nargin < 1, return, end
 			
@@ -70,14 +68,6 @@ classdef AwsNexradFile
 			
 			value = datetime(string(timeStr), 'InputFormat', 'dd-MM-yyyy HH:mm:ss.SSS', 'TimeZone', string(zoneStr));
 			value.Format = 'dd-MM-yyyy HH:mm:ssZ';
-		end
-	end
-	
-	methods % Python backend
-		function value = aslist(obj)
-			% ASLIST Convert object into python list
-			% The cell array is converted into a tuple which is then unpacked
-			value = pyrun("value = [*tup]", "value", tup={obj.underlyingDatastore});
 		end
 	end
 	

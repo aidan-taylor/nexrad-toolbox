@@ -1,4 +1,4 @@
-classdef LocalNexradFile
+classdef LocalNexradFile < nexrad.core.resources.UnderlyingPythonFramework
 	% LOCALNEXRADFILE Metadata for local NEXRAD files
 	% This is a wrapper for py.nexradaws.resources.localnexradfile.LocalNexradFile
 	% objects [1].
@@ -16,11 +16,6 @@ classdef LocalNexradFile
 		radar_id (1,1) string
 		scan_time (1,1) datetime
 	end
-	
-	properties (Hidden, SetAccess=immutable, GetAccess=private)
-		underlyingDatastore (1,1) % Store original python object
-	end
-	
 	
 	properties (Hidden, SetAccess=immutable, GetAccess=private)
 		awsStructure (1,1) logical
@@ -104,14 +99,6 @@ classdef LocalNexradFile
 			
 			value = datetime(string(timeStr), 'InputFormat', 'dd-MM-yyyy HH:mm:ss.SSS', 'TimeZone', string(zoneStr));
 			value.Format = 'dd-MM-yyyy HH:mm:ssZ';
-		end
-	end
-	
-	methods % Python backend
-		function value = aslist(obj)
-			% ASLIST Convert object into python list
-			% The cell array is converted into a tuple which is then unpacked
-			value = pyrun("value = [*tup]", "value", tup={obj.underlyingDatastore});
 		end
 	end
 	

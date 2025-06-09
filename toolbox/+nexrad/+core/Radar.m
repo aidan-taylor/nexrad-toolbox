@@ -1,4 +1,4 @@
-classdef Radar
+classdef Radar < nexrad.core.resources.UnderlyingPythonFramework
 	%RADAR A class for storing antenna coordinate radar data.
 	%
 	% This class has been adapted from The Python-ARM Radar Toolkit (pyart.core.radar.Radar) (c) 2013
@@ -58,11 +58,6 @@ classdef Radar
 		target_scan_rate
 		tilt
 		time
-	end
-	
-	% Store original python object
-	properties (Hidden, SetAccess=immutable, GetAccess=private)
-		underlyingDatastore (1,1)
 	end
 	
 	% Constructor
@@ -241,48 +236,6 @@ classdef Radar
 		
 		function value = get.time(obj)
 			value = obj.convertPyDict(obj.underlyingDatastore.time);
-		end
-	end
-	
-	% Python backend conversion
-	methods (Static, Hidden, Access=private)
-		function value = convertPyDict(dict)
-			% CONVERTPYDICT
-			%
-			
-			if isa(dict, "py.NoneType")
-				value = missing;
-				return
-				
-			else
-				tmp = dictionary(dict);
-				
-				for sField = tmp.keys'
-					if startsWith(sField{:}, "_"), continue, end
-					
-					if isa(dict{sField{:}}, "py.str")
-						value.(sField{:}) = string(dict{sField{:}});
-						
-					elseif isa(dict{sField{:}}, "py.numpy.ma.MaskedArray")
-						value.(sField{:}) = double(dict{sField{:}}.data);
-						invalidIdx = logical(dict{sField{:}}.mask);
-						value.(sField{:})(invalidIdx) = NaN;
-						
-					elseif isa(dict{sField{:}}, "py.numpy.ndarray")
-						value.(sField{:}) = double(dict{sField{:}});
-						
-					elseif isa(dict{sField{:}}, "py.dict")
-						value.(sField{:}) = convertPyDict(dict{sField{:}});
-						
-					elseif isa(dict{sField{:}}, "double")
-						value.(sField{:}) = dict{sField{:}};
-						
-					else
-						warning("'%s' is an unsupported conversion class.", class(dict{sField{:}}));
-						continue
-					end
-				end
-			end
 		end
 	end
 	

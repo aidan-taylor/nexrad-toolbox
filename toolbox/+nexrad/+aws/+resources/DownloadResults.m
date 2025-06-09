@@ -1,4 +1,4 @@
-classdef DownloadResults
+classdef DownloadResults < nexrad.core.resources.UnderlyingPythonFramework
 	% DOWNLOADRESULTS
 	% This is a wrapper for py.nexradaws.resources.downloadresults.DownloadResults
 	% objects [1].
@@ -14,11 +14,6 @@ classdef DownloadResults
 		success (1,:) nexrad.aws.resources.LocalNexradFile
 		success_count (1,1) double
 		total (1,1) double
-	end
-	
-	% Store original python object
-	properties (Hidden, SetAccess=immutable, GetAccess=private)
-		underlyingDatastore (1,1)
 	end
 	
 	methods % Constructor
