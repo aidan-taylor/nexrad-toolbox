@@ -114,38 +114,5 @@
 	% Validate inputs
 	filename = nexrad.core.prepareForRead(filename, varargin{:});
 	
-	count = 1;
-	for sFile = filename
-		
-		if ~endsWith(sFile, '.mat')
-			% If not already ending in .mat, form path to possible matfile (assumes
-			% same directory)
-			[location, name] = fileparts(sFile);
-			sMatFile = fullfile(location, [char(name), '.mat']);
-			
-			if ~isfile(sMatFile)
-				% If .mat does not exist, do conversion to matlab friendly format
-				% (assumes NEXRAD Level 2 binary)
-				sMatFile = nexrad.conversions.pyLevel2Archive(sFile);
-				
-				% Check if the conversion has been a success (if not, will
-				% return an empty but initialised string)
-				if isempty(sMatFile{:}), continue, end
-			end
-			
-			% Pass matfile through
-			sFile = sMatFile; %#ok<FXSET>
-		end
-		
-		% Open matfile and check if radarObject is present
-		oMatFile = matfile(sFile);
-		
-		try
-			% Load Radar object from matfile and index counter
-			radarObject(1, count) = oMatFile.radarObject; %#ok<AGROW>
-			count = count + 1;
-
-		catch
-			warning('NEXRAD:IO:InvalidID', "Required variable 'radarObject' does not exist in '%s'", sFile);
-		end
-	end
+	% Generate radar objects
+	radarObject = nexrad.core.Radar(filename);
