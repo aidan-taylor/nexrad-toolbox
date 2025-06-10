@@ -41,11 +41,15 @@ function results = downloadAvailScans(missingScans, location, awsStructure, nThr
 	% ..[2] We will access data from the **noaa-nexrad-level2** bucket, with the data organized as:
 	% "s3://noaa-nexrad-level2/year/month/date/radarsite/{radarsite}{year}{month}{date}_{hour}{minute}{second}_V06"
 	
-	arguments
+	arguments (Input)
 		missingScans (1,:) nexrad.aws.resources.AwsNexradFile
 		location (1,1) string = fullfile(tempdir, "NEXRAD-Database");
 		awsStructure (1,1) logical = true;
 		nThreads (1,1) double = 6;
+	end
+	
+	arguments (Output)
+		results (1,1) nexrad.aws.resources.DownloadResults
 	end
 	
 	% Initialise python AWS interface
