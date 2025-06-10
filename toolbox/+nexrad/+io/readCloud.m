@@ -7,7 +7,7 @@ function filename = readCloud(radarID, startTime, endTime, nameValueArgs)
 	% =================================
 	% INPUTS (Required)
 	% =================================
-	% radarID (1,N) string
+	% radarID (1,N) nexrad.utility.radarID or convertible
 	%		Four letter ICAO name of the NEXRAD station from which the scans are
 	%		desired. For a mapping of ICAO to station name, see
 	%		https://www.roc.noaa.gov/branches/program-branch/site-id-database/site-id-network-sites.php.
@@ -46,36 +46,35 @@ function filename = readCloud(radarID, startTime, endTime, nameValueArgs)
 	% ========
 	% Examples
 	% ========
-	% filename = nexrad.io.readCloud([], "KABR", datetime([2025 01 01 00 00 00]), datetime([2025 01 01 01 00 00]));
+	% filename = nexrad.io.readCloud("KABR", datetime([2025 01 01 00 00 00]), datetime([2025 01 01 01 00 00]));
 	%		Downloads the available Level 2 archive files from AWS for KABR on
 	%		1st January 2025 between 00:00 and 01:00 and returns the filenames.
 	
-	arguments
-		radarID (1,:) string
+	arguments (Input)
+		radarID (1,:) nexrad.utility.radarID
 		startTime (1,:) datetime
 		endTime (1,:) datetime
 	end
 	
-	arguments
+	arguments (Input)
 		nameValueArgs.saveLocation (1,1) string = fullfile(tempdir, "NEXRAD-Database");
 		nameValueArgs.awsStructure (1,1) logical = true;
 		nameValueArgs.nThreads (1,1) double = 6;
 	end
 	
+	arguments (Output)
+		filename (1,:) string
+	end
+	
 	% Initialise output
 	filename = string.empty(1,0);
-	
-	% Check if a radar station ID has been given and it is valid
-	% if isempty(p.Results.radarID), error('NEXRAD:IO:InvalidID', 'No radar station ID has been given'); end
-	% if ~any(strcmp(p.Results.radarID, string(enumeration('nexrad.utility.radarID')))), warning('NEXRAD:IO:InvalidID', ...
-	% 		'ID: "%s" is not a valid NEXRAD or TDWR radar ID', p.Results.radarID); end
 	
 	% Check if given parameters match valid AWS entries for the nexrad archive
 	% and return filepaths to cloud depository
 	availScans = nexrad.aws.queryAvailScans(radarID, startTime, endTime);
 	
 	% TODO -- add ui to allow user to manually choose which of the remote files to
-	% download from the list available? [20/03/2025]
+	% download from the list available?
 	
 	% Check the cloud files have not already been downloaded to path (only checks
 	% saveLocation or the corresponding aws folder in savelocation)

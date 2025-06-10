@@ -13,7 +13,7 @@ function availScans = queryAvailScans(radarID, startTime, endTime)
 	% =================================
 	% INPUTS (Required)
 	% =================================
-	% radarID (1,N) string
+	% radarID (1,N) nexrad.utility.radarID or convertible
 	%		Four letter ICAO name of the NEXRAD station from which the scans are
 	%		desired. For a mapping of ICAO to station name, see
 	%		https://www.roc.noaa.gov/branches/program-branch/site-id-database/site-id-network-sites.php.
@@ -67,10 +67,14 @@ function availScans = queryAvailScans(radarID, startTime, endTime)
 	% ..[2] We will access data from the **noaa-nexrad-level2** bucket, with the data organized as:
 	% "s3://noaa-nexrad-level2/year/month/date/radarsite/{radarsite}{year}{month}{date}_{hour}{minute}{second}_V06"
 	
-	arguments
-		radarID (1,:) string
+	arguments (Input)
+		radarID (1,:) nexrad.utility.radarID
 		startTime (1,:) datetime
 		endTime (1,:) datetime
+	end
+	
+	arguments (Output)
+		availScans (1,:) nexrad.aws.resources.AwsNexradFile
 	end
 	
 	% Assert matching dimensions are given
@@ -93,12 +97,9 @@ function availScans = queryAvailScans(radarID, startTime, endTime)
 		end
 	end
 	
-	% Convert string array to cell
-	radarID = cellstr(radarID);
-	
 	% Run python code and return the missing scans [2]
 	availScansPy = pyrunfile("+nexrad/+aws/+resources/queryAvailScans.py", "availScans", ...
-		radarID=radarID, startTime=startTime, endTime=endTime);
+		radarID=radarID.cellstr, startTime=startTime, endTime=endTime);
 	
 	% Convert to matlab friendly format
 	if ~isempty(availScansPy)

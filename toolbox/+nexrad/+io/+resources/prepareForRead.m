@@ -1,6 +1,8 @@
 function filename = prepareForRead(filename, varargin)
 	% PREPAREFORREAD Performs input checks for nexrad.io functions.
-	% This is an internal validation function.
+	% This is an internal validation function. Filename is separated from
+	% varargin to enforce convertibility to a row-major string array and for
+	% convenience when invoking cloud-based search. 
 	
 	arguments (Input)
 		filename (1,:) string = [];
@@ -13,27 +15,22 @@ function filename = prepareForRead(filename, varargin)
 	arguments (Output)
 		filename (1,:) string
 	end
-	
-	% If filename is empty, execute file gets
+
 	if isempty(filename)
+		% Promp user to choose a folder(s) and/or file(s) (must be in same folder)
+		filename = nexrad.utility.uiget("Title", "Choose NEXRAD Level II Data Archive(s)", "MultiSelect", true);
 		
-		% If filename is empty and varargin is not, assume cloud search is desired
-		if ~isempty(varargin)
-			
-			% Read AWS archive for radarID and time range
-			filename = nexrad.io.readCloud(varargin{:});
-			
-		else
-			% Promp user to choose a folder(s) and/or file(s) (must be in same folder)
-			filename = nexrad.utility.uiget('Title', 'Choose NEXRAD Level II Data Archive(s)', 'MultiSelect', true);
-			
-			% If uiget returns 0, assume ui was cancelled and error
-			if isnumeric(filename), error("NEXRAD:IO:InvalidCode", "No local folder or file selected"); end
-		end
+		% If uiget returns 0, assume ui was cancelled and error
+		if isnumeric(filename), error("NEXRAD:IO:InvalidCode", "No local folder or file selected"); end
+		
+	elseif ~isempty(varargin)
+		% If neither filename nor varargin are empty, assume cloud search is
+		% desired (filename should contain a string array of radarIDs).
+		filename = nexrad.io.readCloud(filename, varargin{:});
 	end
 	
-	% Now we might have a mix of file/folder names, check if a folder(s) has
-	% been given and extract files 
+	% Now we have only potential file/folder names, check if a folder(s) has
+	% been given and extract files
 	if any(isfolder(filename))
 		filename = extractFolder(filename);
 	end
@@ -42,7 +39,7 @@ function filename = prepareForRead(filename, varargin)
 	filename = checkFile(filename);
 	
 	% Make compulsory final check to ensure there are no duplicates (absolute
-	% path only) 
+	% path only)
 	filename = unique(filename);
 	
 	% If no files are left then error
