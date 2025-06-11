@@ -34,7 +34,7 @@ function [missingScans, presentScans] = checkAvailScans(availScans, location, aw
 	
 	arguments (Input)
 		availScans (1,:) nexrad.aws.resources.AwsNexradFile
-		location (1,1) string = fullfile(tempdir, "NEXRAD-Database");
+		location (1,1) string = fullfile(tempdir, "nexrad-database");
 		awsStructure (1,1) logical = true;
 	end
 	

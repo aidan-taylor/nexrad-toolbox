@@ -49,7 +49,7 @@ function ds = loadArchive(varargin)
 	% saveLocation (1,1) string
 	%		Local folder to save downloaded scans to. Also provides the location
 	%		to check whether any scans are already downloaded.
-	%		(tempdir/NEXRAD-Database, default).
+	%		(tempdir/nexrad-database, default).
 	%
 	% awsStructure (1,1) logical
 	%		Maintain AWS bucket folder structure (true, default). Download all

@@ -26,7 +26,7 @@ function filename = readCloud(radarID, startTime, endTime, nameValueArgs)
 	% saveLocation (1,1) string
 	%		Local folder to save downloaded scans to. Also provides the location
 	%		to check whether any scans are already downloaded.
-	%		(tempdir/NEXRAD-Database, default).
+	%		(tempdir/nexrad-database, default).
 	%
 	% awsStructure (1,1) logical
 	%		Maintain AWS bucket folder structure (true, default). Download all
@@ -57,7 +57,7 @@ function filename = readCloud(radarID, startTime, endTime, nameValueArgs)
 	end
 	
 	arguments (Input)
-		nameValueArgs.saveLocation (1,1) string = fullfile(tempdir, "NEXRAD-Database");
+		nameValueArgs.saveLocation (1,1) string = fullfile(tempdir, "nexrad-database");
 		nameValueArgs.awsStructure (1,1) logical = true;
 		nameValueArgs.nThreads (1,1) double = 6;
 	end

@@ -43,7 +43,7 @@ function results = downloadAvailScans(missingScans, location, awsStructure, nThr
 	
 	arguments (Input)
 		missingScans (1,:) nexrad.aws.resources.AwsNexradFile
-		location (1,1) string = fullfile(tempdir, "NEXRAD-Database");
+		location (1,1) string = fullfile(tempdir, "nexrad-database");
 		awsStructure (1,1) logical = true;
 		nThreads (1,1) double = 6;
 	end
