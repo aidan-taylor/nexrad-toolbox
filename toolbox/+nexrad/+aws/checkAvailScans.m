@@ -32,15 +32,10 @@ function [missingScans, presentScans] = checkAvailScans(availScans, location, aw
 	%		Object array containing the metadata for the files present in the
 	%		specified folder (these have been downloaded).
 	
-	arguments (Input)
+	arguments
 		availScans (1,:) nexrad.aws.resources.AwsNexradFile
 		location (1,1) string = fullfile(tempdir, "nexrad-database");
 		awsStructure (1,1) logical = true;
-	end
-	
-	arguments (Output)
-		missingScans (1,:) nexrad.aws.resources.AwsNexradFile
-		presentScans (1,:) nexrad.aws.resources.LocalNexradFile
 	end
 	
 	% For glob, we need to ensure the filesep is forward slash to prevent string codes

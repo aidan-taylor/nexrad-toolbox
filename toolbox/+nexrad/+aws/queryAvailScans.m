@@ -67,14 +67,10 @@ function availScans = queryAvailScans(radarID, startTime, endTime)
 	% ..[2] We will access data from the **noaa-nexrad-level2** bucket, with the data organized as:
 	% "s3://noaa-nexrad-level2/year/month/date/radarsite/{radarsite}{year}{month}{date}_{hour}{minute}{second}_V06"
 	
-	arguments (Input)
+	arguments
 		radarID (1,:) nexrad.utility.radarID
 		startTime (1,:) datetime
 		endTime (1,:) datetime
-	end
-	
-	arguments (Output)
-		availScans (1,:) nexrad.aws.resources.AwsNexradFile
 	end
 	
 	% Assert matching dimensions are given

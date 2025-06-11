@@ -93,14 +93,6 @@ function radarObject = readArchive(varargin)
 	% .. [1] http://www.ncdc.noaa.gov/
 	% .. [2] http://thredds.ucar.edu/thredds/catalog.html
 	
-	arguments (Input, Repeating)
-		varargin
-	end
-	
-	arguments (Output)
-		radarObject (1,:) nexrad.core.Radar;
-	end
-	
 	% Validate inputs
 	filename = nexrad.io.resources.prepareForRead(varargin{:});
 	

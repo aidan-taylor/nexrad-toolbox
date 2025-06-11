@@ -50,20 +50,16 @@ function filename = readCloud(radarID, startTime, endTime, nameValueArgs)
 	%		Downloads the available Level 2 archive files from AWS for KABR on
 	%		1st January 2025 between 00:00 and 01:00 and returns the filenames.
 	
-	arguments (Input)
+	arguments
 		radarID (1,:) nexrad.utility.radarID
 		startTime (1,:) datetime
 		endTime (1,:) datetime
 	end
 	
-	arguments (Input)
+	arguments
 		nameValueArgs.saveLocation (1,1) string = fullfile(tempdir, "nexrad-database");
 		nameValueArgs.awsStructure (1,1) logical = true;
 		nameValueArgs.nThreads (1,1) double = 6;
-	end
-	
-	arguments (Output)
-		filename (1,:) string
 	end
 	
 	% Initialise output

@@ -84,14 +84,6 @@ function ds = loadArchive(varargin)
 	% .. [1] http://www.ncdc.noaa.gov/
 	% .. [2] http://thredds.ucar.edu/thredds/catalog.html
 	
-	arguments (Input, Repeating)
-		varargin
-	end
-	
-	arguments (Output)
-		ds (1,1) matlab.io.datastore.FileDatastore
-	end
-	
 	% Validate inputs
 	filename = nexrad.io.resources.prepareForRead(varargin{:});
 	

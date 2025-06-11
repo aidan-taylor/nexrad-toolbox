@@ -4,16 +4,12 @@ function filename = prepareForRead(filename, varargin)
 	% varargin to enforce convertibility to a row-major string array and for
 	% convenience when invoking cloud-based search. 
 	
-	arguments (Input)
+	arguments
 		filename (1,:) string = [];
 	end
 	
-	arguments (Input, Repeating)
+	arguments (Repeating)
 		varargin
-	end
-	
-	arguments (Output)
-		filename (1,:) string
 	end
 
 	if isempty(filename)
