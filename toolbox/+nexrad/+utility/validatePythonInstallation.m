@@ -39,7 +39,7 @@ function validatePythonInstallation
 	try
 		% First pyart [2]
 		py.importlib.import_module('pyart');
-		py.pyart.io.read_nexrad_archive(fullfile(nexrad.utility.getRootFolder, "examples/KMHX20180914_111837_V06"));
+		py.pyart.io.read_nexrad_archive(nexrad.utility.getExampleArchive);
 		
 	catch ME
 		warning("NEXRAD:SETUP:PythonModule", ['Python ARM Radar Toolkit is not installed correctly. ' ...
