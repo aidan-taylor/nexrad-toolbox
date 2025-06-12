@@ -37,7 +37,7 @@ function opts = toolboxOptions
     % .mltbx extension, MATLAB appends the extension automatically when it
     % creates the file.
 
-    opts.OutputFile = fullfile("release","NEXRAD Toolbox");
+    opts.OutputFile = fullfile("release","nexrad-toolbox");
     
     % Latest MATLAB release that the toolbox is compatible with, specified
     % as a string using the format RXXXXx, for example, "R2023a". If there
@@ -51,21 +51,28 @@ function opts = toolboxOptions
     % If there is no minimum restriction, specify MinimumMatlabRelease as
     % empty ("").
 
-    opts.MinimumMatlabRelease = "";
+    opts.MinimumMatlabRelease = "R2021b";
 
     % Supported platforms
 
     platforms.Win64        = true;
     platforms.Glnxa64      = true;
     platforms.Maci64       = true;
-    platforms.MatlabOnline = true;
+    platforms.MatlabOnline = false;
     opts.SupportedPlatforms = platforms; 
 
-    % opts.Description = 
+    opts.Description = sprintf("The toolbox frontend is organised within the nexrad namespace " + ...
+		"in the style of a Python module. The two key top-level functions are:\n\n" + ...
+		"    nexrad.io.readArchive\n    nexrad.io.loadArchive\n\n" + ...
+		"Both functions take identical inputs. The first is designed for small-scale queries and " + ...
+		"returns an array of nexrad.core.Radar objects. The second is designed for large-scale " + ...
+		"queries and returns a matlab.io.datastore.FileDatastore object (any remote files will " + ...
+		"be downloaded before the datastore is created). Currently, the only built-in data " + ...
+		"visualisation is as a point cloud object.\n");
 
-    % opts.Summary = 
+    opts.Summary = "A set of MATLAB tools which interact with NEXRAD Level 2 data.";
 
-    % opts.AuthorName = 
+    opts.AuthorName = "Aidan Taylor";
 
     % opts.AuthorEmail =
 
@@ -74,7 +81,7 @@ function opts = toolboxOptions
     % Path to the toolbox image file. Can be specified as a relative or
     % absolute path.
     %
-    % opts.ToolboxImageFile = 
+    opts.ToolboxImageFile = fullfile("images", "hurricane-katrina-ptcloud.jpg");
 
     % Files to be packaged in the toolbox, string vector. By default,
     % ToolboxFiles contains the list of all files in toolboxFolder.
