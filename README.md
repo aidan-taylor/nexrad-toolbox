@@ -12,4 +12,4 @@ Later, you can use the [MATLAB Add-On Manager](https://www.mathworks.com/help/ma
 
 See the [Getting Started](./toolbox/gettingStarted.mlx) script for more information and instructions on setting up the Python environment.
 
-Copyright &copy; 2024 Aidan Taylor
+Copyright &copy; 2025 Aidan Taylor
