@@ -4,7 +4,7 @@ This toolbox provides a set of tool which interact with NEXRAD Level II archive 
 
 ## Installation
 
-Download the `nexrad-toolbox.mltbx` file from the [GitHub repository releases area](https://github.com/aidan-taylor/nexrad-toolbox/releases). Double-click on the downloaded file to automatically and run the MATLAB add-on installer. This will copy the files to your MATLAB add-ons area and add the `nexrad` namespace to your MATLAB search path.
+Download the `nexrad-toolbox.mltbx` file from the [GitHub repository releases area](https://github.com/aidan-taylor/nexrad-toolbox/releases). Double-click on the downloaded file to automatically run the MATLAB add-on installer. This will copy the files to your MATLAB add-ons area and add the `nexrad` namespace to your MATLAB search path.
 
 Later, you can use the [MATLAB Add-On Manager](https://www.mathworks.com/help/matlab/matlab_env/get-add-ons.html) to uninstall.
 
