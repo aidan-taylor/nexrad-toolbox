@@ -64,13 +64,14 @@ function ds = loadArchive(varargin)
 	% OUTPUTS
 	% =======
 	% ds (1,1) matlab.io.datastore.FileDatastore
-	%		Radar object containing all moments and sweeps/cuts in the volume.
+	%		Datastore containing each of the chosen NEXRAD Level II binary
+	%		files.
 	%
 	% ========
 	% Examples
 	% ========
 	% ds = nexrad.io.loadArchive("C:/Data");
-	%		Returns a datastore containning each Level 2 archive file in the
+	%		Returns a datastore containing each Level 2 archive file in the
 	%		folder.
 	%
 	% ds = nexrad.io.loadArchive("KABR", datetime([2025 01 01 00 00 00]), datetime([2025 01 01 01 00 00]));
