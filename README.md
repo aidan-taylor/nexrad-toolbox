@@ -2,9 +2,13 @@
 
 # NEXRAD Toolbox
 
-This toolbox provides a set of tools which interact with NEXRAD Level II archive files. These are wrappers for a Python backend which reads and interprets the binary data through the [Python ARM Radar Toolkit - Py-ART](https://arm-doe.github.io/pyart/). 
+This toolbox provides a set of tools which interact with NEXRAD Level II archive files. 
+
+The interpreting of the binary data is handled through a Python backend using the [Python ARM Radar Toolkit - Py-ART](https://arm-doe.github.io/pyart/). 
 
 AWS interaction with the S3 Level II archive bucket is also provided through the Python module [nexradaws](https://nexradaws.readthedocs.io/en/latest/index.html). 
+
+Both above handling methods may change in a future release.
 
 ## Installation
 
